@@ -178,7 +178,7 @@ async function go() {
           reduceOnly: false,
         }
       }).then(async (res) => {
-        console.log('Stop loss place at price ' + JSON.stringify(res.result.orderPrice))
+        console.log('Stop loss place at price ' + JSON.stringify(res))
         ftx.terminate()
       }).catch(err => console.log('Error placing Stop ' + err))
       //place 1:1 target order
@@ -195,7 +195,7 @@ async function go() {
           reduceOnly: false,
         }
       }).then((res) => {
-        console.log('target Placed at ' + res.result.price)
+        console.log('target Placed at ' + res)
         console.log('terminating after target')
         ftx.terminate()
         process.exit()
