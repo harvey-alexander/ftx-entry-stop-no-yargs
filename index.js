@@ -49,7 +49,7 @@ let isShort = entryPrice < stopPrice;
 //other variables
 let subscribe;
 let ticker;
-let orderInProgress = true;
+let alreadyOrdered = false;
 
 // conditional stop limit order paramaters
 const slo = {
@@ -137,17 +137,22 @@ async function go() {
         //place stop and target
         .then(async (res) => {
           console.log('placing orders and terminating')
-          ftx.terminate()
           otherorders(res)
+          alreadyOrdered = true
 
         })
         .catch(err => console.log('Eror getting order' + err))
     }
+
+
   })
 
   const otherorders = (res) => {
     console.log('this is where the other orders run, the order id is: ' + JSON.stringify(res.result[0].id))
-
+    if (alreadyOrdered) {
+      ftx.terminate()
+      process.exit()
+    }
     console.log(res.result[0].status)
     let status = res.result[0].status;
     console.log(status)
