@@ -7,7 +7,6 @@ const ftxccxt = new CCXT.ftx({ apiKey: process.env.API_KEY, secret: process.env.
 const ftxWs = new FTXWS({ apiKey: process.env.API_KEY, secret: process.env.API_SECRET })
 
 const { argv } = require("yargs")
-  .usage("Usage: binance-oco")
   .example(
     "node index.js -p ETH-PERP -a 1 -e 150 -s 125",
     "Place a buy order for 1 ETH @ $150. If order is filled, places stop at $125. If stop is breached prior to entry order fill, cancels entry order, terminates and exits."
@@ -148,9 +147,6 @@ async function go() {
       ftxWs.terminate()
       process.exit()
     }
-    console.log('order status is: ' + res[0].status)
-    let status = res[0].status;
-    console.log('got status' + status)
     // //calculate stuff for 1:1 target
     let avgFillPrice = res[0].info.avgFillPrice
     console.log('the avg fill price is: ' + avgFillPrice)
@@ -166,7 +162,6 @@ async function go() {
           // ftxWs.terminate()
           // process.exit()
         }).catch(err => console.log('Error placing Stop ' + err))
-
     }
   }
 }
