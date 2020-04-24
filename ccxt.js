@@ -109,7 +109,7 @@ async function go() {
       (!isShort && ticker.last < stopPrice)
     ) {
       // NEEDS TESTING
-      //get last order and cancel 
+      // Get last order and cancel 
       ftxccxt.fetchOpenOrders(pair, since = undefined, 1)
         .catch(err => console.log('Error getting order for cancel' + err))
         //cancel order
@@ -122,11 +122,11 @@ async function go() {
     }
     // UNIT TEST
     // if price goes through entry
-    if (ticker.last > 1
-      // //if long
-      // (entryPrice > stopPrice && ticker.bid <= stopPrice)
-      // //if short
-      // || (entryPrice < stopPrice && ticker.ask >= stopPrice)
+    if (
+      //if long
+      (entryPrice > stopPrice && ticker.bid <= stopPrice)
+      //if short
+      || (entryPrice < stopPrice && ticker.ask >= stopPrice)
     ) {
       //get entry order fill details
       ftxccxt.fetchOrders(pair, since = undefined, 1)
@@ -162,8 +162,9 @@ async function go() {
       console.log('posting stoploss')
       ftxccxt.createOrder(pair, stopType, stopSide, amount, stopPrice, ccxtstopOverride)
         .then(async (res) => {
-          console.log('Stop loss place at price ' + JSON.stringify(res))
-          ftxWs.terminate()
+          console.log('Stop loss place at price ' + res.info.price)
+          // ftxWs.terminate()
+          // process.exit()
         }).catch(err => console.log('Error placing Stop ' + err))
 
     }
