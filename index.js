@@ -9,8 +9,8 @@ const ftxWs = new FTXWS({ apiKey: process.env.API_KEY, secret: process.env.API_S
 const { argv } = require("yargs")
   .usage("Usage: binance-oco")
   .example(
-    "binance-oco -p BNBBTC -a 1 -b 0.002 -s 0.001 -t 0.003",
-    "Place a buy order for 1 BNB @ 0.002 BTC. Once filled, place a stop-limit sell @ 0.001 BTC. If a price of 0.003 BTC is reached, cancel stop-limit order and place a limit sell @ 0.003 BTC."
+    "node index.js -p ETH-PERP -a 1 -e 150 -s 125",
+    "Place a buy order for 1 ETH @ $150. If order is filled, places stop at $125. If stop is breached prior to entry order fill, cancels entry order, terminates and exits."
   )
   // '-p <tradingPair>'
   .demand("pair")
