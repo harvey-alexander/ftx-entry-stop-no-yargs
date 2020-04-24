@@ -14,8 +14,6 @@ const ftx = new FTXWs({
 });
 
 
-
-
 //Order Inputs
 const pair = "BTC-PERP";
 
