@@ -10,8 +10,19 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "ccxt": "^1.26.56",
     "dotenv": "^8.2.0",
     "ftx-api-rest": "0.0.4",
-    "ftx-api-ws": "0.0.6"
+    "ftx-api-ws": "0.0.6",
+    "yargs": "^15.3.1"
+  },
+  "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^2.29.0",
+    "@typescript-eslint/parser": "^2.29.0",
+    "eslint": "^6.8.0",
+    "eslint-config-airbnb-base": "^14.1.0",
+    "eslint-plugin-import": "^2.20.2",
+    "jest": "^25.4.0",
+    "node-typescript-compiler": "^2.1.1"
   }
 }

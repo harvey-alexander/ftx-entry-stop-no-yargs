@@ -1,7 +1,7 @@
 const FTXWs = require('ftx-api-ws');
 const FTXRest = require('ftx-api-rest');
 require('dotenv').config()
-const ws = require('ws')
+
 const ftxRestApi = new FTXRest({
   key: process.env.API_KEY,
   secret: process.env.API_SECRET
@@ -12,6 +12,8 @@ const ftx = new FTXWs({
   key: process.env.API_KEY,
   secret: process.env.API_SECRET
 });
+
+
 
 
 //Order Inputs
@@ -120,11 +122,11 @@ async function go() {
         })
     }
     // if price goes through entry
-    if (ticker.last > 1
+    if (
       //if long
-      //(entryPrice > stopPrice && ticker.bid <= stopPrice)
+      (entryPrice > stopPrice && ticker.bid <= stopPrice)
       //if short
-      //|| (entryPrice < stopPrice && ticker.ask >= stopPrice)
+      || (entryPrice < stopPrice && ticker.ask >= stopPrice)
     ) {
       ftxRestApi.request({
         method: 'GET',
@@ -148,7 +150,6 @@ async function go() {
   })
 
   const otherorders = (res) => {
-    console.log('this is where the other orders run, the order id is: ' + JSON.stringify(res.result[0].id))
     if (alreadyOrdered) {
       ftx.terminate()
       process.exit()
