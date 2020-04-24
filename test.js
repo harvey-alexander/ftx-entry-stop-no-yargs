@@ -8,11 +8,6 @@ const ftxccxt = new CCXT.ftx({
 
 })
 
-const ftxWs = new FTXWS({
-  apiKey: process.env.API_KEY,
-  secret: process.env.API_SECRET,
-})
-
 async function o() {
   console.log('doin a get'
   )
