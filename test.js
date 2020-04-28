@@ -8,11 +8,17 @@ const ftxccxt = new CCXT.ftx({
 
 })
 
-async function o() {
-  console.log('doin a get'
-  )
-  await ftxccxt.fetchOrders('BTC-PERP', since = undefined, 1)
-    .then(res => console.log(res[0].id))
-}
+let entryOrderTimestamp = Date.now() - 100000
+console.log(entryOrderTimestamp)
 
-o()
+
+
+ftxccxt.fetchOrders('BSV-PERP', since = undefined, 1)
+  .then(res => {
+    let ot = res[0].timestamp
+    console.log(ot)
+    ftxccxt.fetchOHLCV('BTC-PERP', timeframe = '1m', since = ot, limit = 1000, params = {})
+      .then(res => console.log(res))
+  }
+  )
+

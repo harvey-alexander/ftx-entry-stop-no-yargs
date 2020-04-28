@@ -130,7 +130,7 @@ async function go() {
       //get entry order fill details
       ftxccxt.fetchOrders(pair, since = undefined, 1)
         //place stop and target
-        .then(async (res) => {
+        .then((res) => {
           //if the order has a status of closed?
           console.log('placing orders and terminating')
           otherorders(res)
