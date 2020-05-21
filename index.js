@@ -6,88 +6,59 @@ require('dotenv').config()
 const ftxccxt = new CCXT.ftx({ apiKey: process.env.API_KEY, secret: process.env.API_SECRET })
 const ftxWs = new FTXWS({ apiKey: process.env.API_KEY, secret: process.env.API_SECRET })
 
-const { argv } = require("yargs")
-  .example(
-    "node index.js -p ETH-PERP -a 1 -e 150 -s 125",
-    "Place a buy order for 1 ETH @ $150. If order is filled, places stop at $125. If stop is breached prior to entry order fill, cancels entry order, terminates and exits."
-  )
-  // '-p <tradingPair>'
-  .demand("pair")
-  .alias("p", "pair")
-  .describe("p", "Set trading pair eg. BNBBTC")
-  // '-a <amount>'
-  .demand("amount")
-  .number("a")
-  .alias("a", "amount")
-  .describe("a", "Set amount to buy/sell")
-  // 'e <entryPrice>
-  .demand('e')
-  .number('e')
-  .alias('e', 'entry-price')
-  .describe('e', 'Set Entry Price')
-  // '-s <stopPrice>'
-  .number("s")
-  .alias("s", "stop-price")
-  .describe("s", "Set stop-limit order stop price")
-  .default("F", false);
 
-const {
-  p: pair,
-  a: amount,
-  e: entryPrice,
-  s: stopPrice,
-} = argv;
-console.log(argv)
-let isShort = entryPrice < stopPrice;
+async function go(position) {
+  const { pair, amount, entry: entryPrice, stop: stopPrice, timeframe } = position
+  let isShort = entryPrice < stopPrice;
 
-let entrySide,
-  entryType,
-  entryTriggerPrice,
-  ccxtOverride,
-  stopSide,
-  stopType,
-  cancelPrice,
-  alreadyOrdered = false
+  let entrySide,
+    entryType,
+    entryTriggerPrice,
+    ccxtOverride,
+    stopSide,
+    stopType,
+    cancelPrice,
+    alreadyOrdered = false
 
-if (isShort) {
-  // Short entry Paramaters
-  entrySide = "sell";
-  entryType = 'limit';
-  entryTriggerPrice = (entryPrice + 0.01)
-  // ccxt short override
-  ccxtOverride = {
-    'orderPrice': entryTriggerPrice,
-  }
-  // Short exit paramaters
-  stopSide = 'buy'
-  stopType = 'limit'
-  cancelPrice = (stopPrice - 0.01)
-  ccxtstopOverride = {
-    'orderPrice': stopPrice,
-    'reduceOnly': true
+  if (isShort) {
+    // Short entry Paramaters
+    entrySide = "sell";
+    entryType = 'limit';
+    entryTriggerPrice = (entryPrice + 0.01)
+    // ccxt short override
+    ccxtOverride = {
+      'orderPrice': entryTriggerPrice,
+    }
+    // Short exit paramaters
+    stopSide = 'buy'
+    stopType = 'limit'
+    cancelPrice = (stopPrice - 0.01)
+    ccxtstopOverride = {
+      'orderPrice': stopPrice,
+      'reduceOnly': true
+    }
+
+  } else if (!isShort) {
+    // Long entry Paramaters
+    entrySide = 'buy'
+    entryType = 'stop' //stop limit, so use a conditional order with a trigger price
+    entryTriggerPrice = (entryPrice + 0.01)
+    // ccxt short override
+    ccxtOverride = {
+      'orderPrice': entryPrice
+    }
+    //Long stop paramaters
+    stopSide = 'sell'
+    stopType = 'stop'
+    cancelPrice = (stopPrice + 0.01)
+    ccxtstopOverride = {
+      'orderPrice': stopPrice
+    }
   }
 
-} else if (!isShort) {
-  // Long entry Paramaters
-  entrySide = 'buy'
-  entryType = 'stop' //stop limit, so use a conditional order with a trigger price
-  entryTriggerPrice = (entryPrice + 0.01)
-  // ccxt short override
-  ccxtOverride = {
-    'orderPrice': entryPrice
-  }
-  //Long stop paramaters
-  stopSide = 'sell'
-  stopType = 'stop'
-  cancelPrice = (stopPrice + 0.01)
-  ccxtstopOverride = {
-    'orderPrice': stopPrice
-  }
-}
+  console.log(isShort)
 
-console.log(isShort)
 
-async function go() {
   await ftxWs.connect()
     .catch(err => console.log(err))
   await ftxccxt.createOrder(pair, entryType, entrySide, amount, entryPrice, ccxtOverride)
@@ -132,7 +103,7 @@ async function go() {
         //place stop and target
         .then((res) => {
           //if the order has a status of closed?
-          console.log('placing orders and terminating')
+          console.log('placing orders')
           otherorders(res)
           alreadyOrdered = true
 
@@ -165,4 +136,5 @@ async function go() {
     }
   }
 }
-go()
+
+module.export = go
